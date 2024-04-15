@@ -12,7 +12,6 @@ public class Configuration {
 //    @Value("${askmate.database.url}")
 //    private String databaseUrl;
 
-    @Bean
     public QuestionsDAO questionsDAO() {
         return new QuestionsDaoJdbc();
     }
