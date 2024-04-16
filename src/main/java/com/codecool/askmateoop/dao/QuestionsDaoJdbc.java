@@ -16,7 +16,11 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
 
     private final Logger logger = new ConsoleLogger();
 
-    //    TODO: Add the url of your database to the Environment Variables of the Run Configuration
+    private int questionId;
+    private String question;
+    private String description;
+    private LocalDateTime time;
+
     @Value("${askmate.database.url}")
     private String databaseUrl;
     @Value("${askmate.database.username}")
@@ -26,14 +30,8 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
 
     @Override
     public List<Question> getAllQuestions() {
-        String sql = "SELECT * FROM questions";
-
+        String sql = "SELECT * FROM question";
         List<Question> questions = new ArrayList<>();
-        int questionId;
-        String question;
-        String description;
-        LocalDateTime time;
-
 
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
@@ -49,6 +47,28 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
             logger.logError(e.getMessage());
         }
         return questions;
+    }
+
+    @Override
+    public Question getQuestionById(int id) {
+        String sql = "SELECT * FROM question WHERE id = ?";
+        Question searchedQuestion = null;
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                questionId = resultSet.getInt("question_id");
+                question = resultSet.getString("title");
+                description = resultSet.getString("description");
+                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+                searchedQuestion = new Question(questionId, question, description, time);
+            }
+        } catch (SQLException e) {
+            logger.logError(e.getMessage());
+        }
+        return searchedQuestion;
     }
 
     private Connection getConnection() {
