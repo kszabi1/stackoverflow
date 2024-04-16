@@ -5,8 +5,8 @@ import com.codecool.askmateoop.controller.dto.NewQuestionDTO;
 import com.codecool.askmateoop.dao.model.Question;
 import com.codecool.askmateoop.logger.ConsoleLogger;
 import com.codecool.askmateoop.logger.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import com.codecool.askmateoop.configuration.Configuration;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -17,11 +17,16 @@ import java.util.List;
 public class QuestionsDaoJdbc implements QuestionsDAO {
 
     private final Logger logger = new ConsoleLogger();
-    private Configuration configuration = new Configuration();
+
+    private final Configuration conf = new Configuration();
+
     private int questionId;
     private String question;
     private String description;
     private LocalDateTime time;
+
+
+
 
     @Override
     public List<Question> getAllQuestions() {
@@ -29,7 +34,8 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
 
         List<Question> questions = new ArrayList<>();
 
-        try (Connection connection = configuration.getConnection();
+
+        try (Connection connection = conf.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
@@ -50,7 +56,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         String sql = "INSERT INTO questions(question, description) VALUES(?, ?)";
         Question newQuestion = null;
 
-        try (Connection connection = configuration.getConnection();
+        try (Connection connection = conf.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, question.title());
             preparedStatement.setString(2, question.description());
@@ -74,7 +80,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         String sql = "SELECT * FROM questions WHERE question_id = ?";
         Question searchedQuestion = null;
 
-        try (Connection connection = configuration.getConnection();
+        try (Connection connection = conf.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -95,7 +101,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
     public boolean deleteQuestionById(int id) {
         String sql = "DELETE FROM questions WHERE question_id = ?";
 
-        try (Connection connection = configuration.getConnection();
+        try (Connection connection = conf.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
@@ -112,7 +118,6 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         }
         return false;
     }
-
 
 }
 
