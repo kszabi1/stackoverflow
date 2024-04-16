@@ -1,4 +1,4 @@
 package com.codecool.askmateoop.dao.model;
 
-public record Question(int id, String title, String description) {
+public record Question(int id, String title, String description, java.time.LocalDateTime time) {
 }
