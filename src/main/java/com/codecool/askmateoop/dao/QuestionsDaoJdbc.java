@@ -17,7 +17,11 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
 
     private final Logger logger = new ConsoleLogger();
 
-    //    TODO: Add the url of your database to the Environment Variables of the Run Configuration
+    private int questionId;
+    private String question;
+    private String description;
+    private LocalDateTime time;
+
     @Value("${askmate.database.url}")
     private String databaseUrl;
     @Value("${askmate.database.username}")
@@ -30,10 +34,6 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         String sql = "SELECT * FROM questions";
 
         List<Question> questions = new ArrayList<>();
-        int questionId;
-        String question;
-        String description;
-        LocalDateTime time;
 
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
@@ -73,6 +73,28 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
             logger.logError(e.getMessage());
         }
         return 0;
+    }
+
+    @Override
+    public Question getQuestionById(int id) {
+        String sql = "SELECT * FROM questions WHERE question_id = ?";
+        Question searchedQuestion = null;
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                questionId = resultSet.getInt("question_id");
+                question = resultSet.getString("question");
+                description = resultSet.getString("description");
+                time = resultSet.getTimestamp("creation_time").toLocalDateTime();
+                searchedQuestion = new Question(questionId, question, description, time);
+            }
+        } catch (SQLException e) {
+            logger.logError(e.getMessage());
+        }
+        return searchedQuestion;
     }
 
     private Connection getConnection() {
