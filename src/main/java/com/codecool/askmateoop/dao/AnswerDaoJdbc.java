@@ -3,6 +3,7 @@ package com.codecool.askmateoop.dao;
 import com.codecool.askmateoop.configuration.Configuration;
 import com.codecool.askmateoop.controller.dto.NewAnswerDTO;
 import com.codecool.askmateoop.dao.model.Answer;
+import com.codecool.askmateoop.dao.model.Question;
 import com.codecool.askmateoop.logger.ConsoleLogger;
 import com.codecool.askmateoop.logger.Logger;
 import org.springframework.stereotype.Repository;
@@ -87,5 +88,26 @@ public class AnswerDaoJdbc implements AnswerDAO{
             logger.logError(e.getMessage());
         }
         return answers;
+    }
+
+    @Override
+    public Answer getAnswerById(int id) {
+        String sql = "SELECT * FROM answers WHERE answer_id = ?";
+        Answer searchedAnswer = null;
+
+        try (Connection connection = conf.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                answerId = resultSet.getInt("answer_id");
+                question_id = resultSet.getInt("question_id");
+                message = resultSet.getString("message");
+                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+                searchedAnswer = new Answer(answerId, question_id, message, time);
+            }
+        } catch (SQLException e) {
+            logger.logError(e.getMessage());
+        }
+        return searchedAnswer;
     }
 }
