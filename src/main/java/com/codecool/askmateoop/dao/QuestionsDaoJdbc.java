@@ -3,8 +3,8 @@ package com.codecool.askmateoop.dao;
 import com.codecool.askmateoop.dao.model.Question;
 import com.codecool.askmateoop.logger.ConsoleLogger;
 import com.codecool.askmateoop.logger.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import com.codecool.askmateoop.configuration.Configuration;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -15,25 +15,19 @@ import java.util.List;
 public class QuestionsDaoJdbc implements QuestionsDAO {
 
     private final Logger logger = new ConsoleLogger();
+    private final Configuration conf = new Configuration();
 
     private int questionId;
     private String question;
     private String description;
     private LocalDateTime time;
-
-    @Value("${askmate.database.url}")
-    private String databaseUrl;
-    @Value("${askmate.database.username}")
-    private String username;
-    @Value("${askmate.database.password}")
-    private String password;
-
+    
     @Override
     public List<Question> getAllQuestions() {
         String sql = "SELECT * FROM question";
         List<Question> questions = new ArrayList<>();
 
-        try (Connection connection = getConnection();
+        try (Connection connection = conf.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
@@ -54,7 +48,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         String sql = "SELECT * FROM question WHERE id = ?";
         Question searchedQuestion = null;
 
-        try (Connection connection = getConnection();
+        try (Connection connection = conf.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -69,15 +63,6 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
             logger.logError(e.getMessage());
         }
         return searchedQuestion;
-    }
-
-    private Connection getConnection() {
-        try {
-            return DriverManager.getConnection(databaseUrl, username, password);
-        } catch (SQLException ex) {
-            System.err.println("Could not create database connection.");
-            throw new RuntimeException(ex);
-        }
     }
 }
 
