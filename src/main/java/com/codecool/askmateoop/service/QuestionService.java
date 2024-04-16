@@ -43,7 +43,6 @@ public class QuestionService {
     }
 
     public int addNewQuestion(NewQuestionDTO question) {
-        // TODO
-        throw new UnsupportedOperationException();
+        return questionsDAO.addNewQuestion(question);
     }
 }
