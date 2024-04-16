@@ -13,11 +13,11 @@ public class ExampleController {
 
 //    Endpoint examples for Server Side Rendering
 //    Can be used instead of a frontend framework (like React)
-//    "index" is the name of the html file sent to the user, located in the src/main/resources/templates folder
+//    "index" is the username of the html file sent to the user, located in the src/main/resources/templates folder
 
     @GetMapping
     public String index(Model model) {
-        model.addAttribute("name", "Example name");
+        model.addAttribute("name", "Example username");
         return "index";
     }
 
