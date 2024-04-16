@@ -9,4 +9,5 @@ public interface QuestionsDAO {
     List<Question> getAllQuestions();
     int addNewQuestion(NewQuestionDTO question);
     Question getQuestionById(int id);
+    boolean deleteQuestionById(int id);
 }

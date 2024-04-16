@@ -97,6 +97,28 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         return searchedQuestion;
     }
 
+    @Override
+    public boolean deleteQuestionById(int id) {
+        String sql = "DELETE FROM questions WHERE question_id = ?";
+
+        try (Connection connection = this.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int questionId = generatedKeys.getInt(1);
+                logger.logInfo("Question deleted with id: " + questionId);
+                return true;
+            } else {
+                throw new SQLException("Deleting question failed, no ID obtained.");
+            }
+        } catch (SQLException e) {
+            logger.logError(e.getMessage());
+        }
+        return false;
+    }
+
     private Connection getConnection() {
         try {
             return DriverManager.getConnection(databaseUrl, username, password);
