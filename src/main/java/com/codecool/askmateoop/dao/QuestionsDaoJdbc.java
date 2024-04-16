@@ -1,5 +1,6 @@
 package com.codecool.askmateoop.dao;
 
+import com.codecool.askmateoop.configuration.Configuration;
 import com.codecool.askmateoop.controller.dto.NewQuestionDTO;
 import com.codecool.askmateoop.dao.model.Question;
 import com.codecool.askmateoop.logger.ConsoleLogger;
@@ -16,18 +17,23 @@ import java.util.List;
 public class QuestionsDaoJdbc implements QuestionsDAO {
 
     private final Logger logger = new ConsoleLogger();
+
     private final Configuration conf = new Configuration();
 
     private int questionId;
     private String question;
     private String description;
     private LocalDateTime time;
-    
+
+
+
+
     @Override
     public List<Question> getAllQuestions() {
         String sql = "SELECT * FROM questions";
 
         List<Question> questions = new ArrayList<>();
+
 
         try (Connection connection = conf.getConnection();
              Statement statement = connection.createStatement();
@@ -112,6 +118,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         }
         return false;
     }
+
 }
 
 
