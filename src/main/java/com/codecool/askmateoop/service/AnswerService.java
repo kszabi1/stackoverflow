@@ -1,5 +1,6 @@
 package com.codecool.askmateoop.service;
 
+import com.codecool.askmateoop.controller.dto.NewAnswerDTO;
 import com.codecool.askmateoop.dao.AnswerDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,9 @@ public class AnswerService {
         this.answerDAO = answerDAO;
     }
 
-    public int createAnswer(int question_id) {
-
-        return 0;
+    public int createAnswer(NewAnswerDTO answer) {
+        return answerDAO.createAnswer(answer);
     }
+
+
 }

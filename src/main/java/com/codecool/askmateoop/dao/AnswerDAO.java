@@ -1,5 +1,7 @@
 package com.codecool.askmateoop.dao;
 
+import com.codecool.askmateoop.controller.dto.NewAnswerDTO;
+
 public interface AnswerDAO {
-    int createAnswer(int question_id);
+    int createAnswer(NewAnswerDTO answer);
 }

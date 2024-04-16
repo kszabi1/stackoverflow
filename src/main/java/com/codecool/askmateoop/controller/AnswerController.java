@@ -1,6 +1,6 @@
 package com.codecool.askmateoop.controller;
 
-import com.codecool.askmateoop.controller.dto.NewQuestionDTO;
+import com.codecool.askmateoop.controller.dto.NewAnswerDTO;
 import com.codecool.askmateoop.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ public class AnswerController {
     }
 
     @PostMapping("/{question_id}")
-    public int createAnswer(@PathVariable int question_id, @RequestBody NewQuestionDTO answer) {
-        return answerService.createAnswer(question_id);
+    public int createAnswer(@RequestBody NewAnswerDTO answer) {
+        return answerService.createAnswer(answer);
     }
 }
