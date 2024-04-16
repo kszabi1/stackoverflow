@@ -50,7 +50,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         String sql = "INSERT INTO questions(question, description) VALUES(?, ?)";
         Question newQuestion = null;
 
-        try (Connection connection = this.getConnection();
+        try (Connection connection = conf.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, question.title());
             preparedStatement.setString(2, question.description());
@@ -95,7 +95,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
     public boolean deleteQuestionById(int id) {
         String sql = "DELETE FROM questions WHERE question_id = ?";
 
-        try (Connection connection = this.getConnection();
+        try (Connection connection = conf.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
@@ -111,15 +111,6 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
             logger.logError(e.getMessage());
         }
         return false;
-    }
-
-    private Connection getConnection() {
-        try {
-            return DriverManager.getConnection(databaseUrl, username, password);
-        } catch (SQLException ex) {
-            System.err.println("Could not create database connection.");
-            throw new RuntimeException(ex);
-        }
     }
 }
 
