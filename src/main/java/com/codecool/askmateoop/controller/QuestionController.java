@@ -32,7 +32,7 @@ public class QuestionController {
     @PostMapping("/")
     public int addNewQuestion(@RequestBody NewQuestionDTO question) {
 //        TODO
-        throw new UnsupportedOperationException();
+        return questionService.addNewQuestion(question);
     }
 
     @DeleteMapping("/{id}")

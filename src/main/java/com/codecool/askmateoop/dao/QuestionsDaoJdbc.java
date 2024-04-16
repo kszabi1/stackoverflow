@@ -1,5 +1,6 @@
 package com.codecool.askmateoop.dao;
 
+import com.codecool.askmateoop.controller.dto.NewQuestionDTO;
 import com.codecool.askmateoop.dao.model.Question;
 import com.codecool.askmateoop.logger.ConsoleLogger;
 import com.codecool.askmateoop.logger.Logger;
@@ -34,7 +35,6 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         String description;
         LocalDateTime time;
 
-
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
@@ -42,13 +42,37 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
                 questionId = resultSet.getInt("question_id");
                 question = resultSet.getString("question");
                 description = resultSet.getString("description");
-                time = resultSet.getTimestamp("time").toLocalDateTime();
+                time = resultSet.getTimestamp("creation_time").toLocalDateTime();
                 questions.add(new Question(questionId, question, description, time));
             }
         } catch (SQLException e) {
             logger.logError(e.getMessage());
         }
         return questions;
+    }
+
+    @Override
+    public int addNewQuestion(NewQuestionDTO question) {
+        String sql = "INSERT INTO questions(question, description) VALUES(?, ?)";
+        Question newQuestion = null;
+
+        try (Connection connection = this.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, question.title());
+            preparedStatement.setString(2, question.description());
+            preparedStatement.executeUpdate();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int questionId = generatedKeys.getInt(1);
+                logger.logInfo("New Question created with id: " + questionId);
+                return questionId;
+            } else {
+                throw new SQLException("Creating question failed, no ID obtained.");
+            }
+        } catch (SQLException e) {
+            logger.logError(e.getMessage());
+        }
+        return 0;
     }
 
     private Connection getConnection() {
