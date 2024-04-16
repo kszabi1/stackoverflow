@@ -30,13 +30,11 @@ public class QuestionController {
 
     @PostMapping("/")
     public int addNewQuestion(@RequestBody NewQuestionDTO question) {
-//        TODO
-        throw new UnsupportedOperationException();
+        return questionService.addNewQuestion(question);
     }
 
     @DeleteMapping("/{id}")
     public boolean deleteQuestionById(@PathVariable int id) {
-//        TODO
-        throw new UnsupportedOperationException();
+        return questionService.deleteQuestionById(id);
     }
 }

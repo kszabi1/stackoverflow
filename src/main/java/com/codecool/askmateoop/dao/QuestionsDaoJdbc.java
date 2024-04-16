@@ -1,5 +1,6 @@
 package com.codecool.askmateoop.dao;
 
+import com.codecool.askmateoop.controller.dto.NewQuestionDTO;
 import com.codecool.askmateoop.dao.model.Question;
 import com.codecool.askmateoop.logger.ConsoleLogger;
 import com.codecool.askmateoop.logger.Logger;
@@ -24,7 +25,8 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
     
     @Override
     public List<Question> getAllQuestions() {
-        String sql = "SELECT * FROM question";
+        String sql = "SELECT * FROM questions";
+
         List<Question> questions = new ArrayList<>();
 
         try (Connection connection = conf.getConnection();
@@ -34,7 +36,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
                 questionId = resultSet.getInt("question_id");
                 question = resultSet.getString("question");
                 description = resultSet.getString("description");
-                time = resultSet.getTimestamp("time").toLocalDateTime();
+                time = resultSet.getTimestamp("creation_time").toLocalDateTime();
                 questions.add(new Question(questionId, question, description, time));
             }
         } catch (SQLException e) {
@@ -44,8 +46,32 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
     }
 
     @Override
+    public int addNewQuestion(NewQuestionDTO question) {
+        String sql = "INSERT INTO questions(question, description) VALUES(?, ?)";
+        Question newQuestion = null;
+
+        try (Connection connection = this.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, question.title());
+            preparedStatement.setString(2, question.description());
+            preparedStatement.executeUpdate();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int questionId = generatedKeys.getInt(1);
+                logger.logInfo("New Question created with id: " + questionId);
+                return questionId;
+            } else {
+                throw new SQLException("Creating question failed, no ID obtained.");
+            }
+        } catch (SQLException e) {
+            logger.logError(e.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
     public Question getQuestionById(int id) {
-        String sql = "SELECT * FROM question WHERE id = ?";
+        String sql = "SELECT * FROM questions WHERE question_id = ?";
         Question searchedQuestion = null;
 
         try (Connection connection = conf.getConnection();
@@ -54,15 +80,46 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 questionId = resultSet.getInt("question_id");
-                question = resultSet.getString("title");
+                question = resultSet.getString("question");
                 description = resultSet.getString("description");
-                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+                time = resultSet.getTimestamp("creation_time").toLocalDateTime();
                 searchedQuestion = new Question(questionId, question, description, time);
             }
         } catch (SQLException e) {
             logger.logError(e.getMessage());
         }
         return searchedQuestion;
+    }
+
+    @Override
+    public boolean deleteQuestionById(int id) {
+        String sql = "DELETE FROM questions WHERE question_id = ?";
+
+        try (Connection connection = this.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int questionId = generatedKeys.getInt(1);
+                logger.logInfo("Question deleted with id: " + questionId);
+                return true;
+            } else {
+                throw new SQLException("Deleting question failed, no ID obtained.");
+            }
+        } catch (SQLException e) {
+            logger.logError(e.getMessage());
+        }
+        return false;
+    }
+
+    private Connection getConnection() {
+        try {
+            return DriverManager.getConnection(databaseUrl, username, password);
+        } catch (SQLException ex) {
+            System.err.println("Could not create database connection.");
+            throw new RuntimeException(ex);
+        }
     }
 }
 

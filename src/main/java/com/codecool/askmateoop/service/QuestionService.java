@@ -38,12 +38,10 @@ public class QuestionService {
     }
 
     public boolean deleteQuestionById(int id) {
-        // TODO
-        throw new UnsupportedOperationException();
+        return questionsDAO.deleteQuestionById(id);
     }
 
     public int addNewQuestion(NewQuestionDTO question) {
-        // TODO
-        throw new UnsupportedOperationException();
+        return questionsDAO.addNewQuestion(question);
     }
 }
