@@ -29,4 +29,7 @@ public class AnswerController {
     @GetMapping("/all")
     public List<Answer> getAllAnswer() {return answerService.getAllAnswer();}
 
+    @GetMapping("/{id}")
+    public Answer getAnswerById(@PathVariable int id) { return answerService.getAnswerById(id); }
+
 }

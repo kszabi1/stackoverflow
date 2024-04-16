@@ -9,4 +9,5 @@ public interface AnswerDAO {
     int createAnswer(NewAnswerDTO answer);
     boolean deleteAnswerById(int id);
     List<Answer> getAllAnswers();
+    Answer getAnswerById(int id);
 }

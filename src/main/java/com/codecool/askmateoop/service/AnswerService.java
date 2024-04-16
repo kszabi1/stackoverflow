@@ -24,4 +24,6 @@ public class AnswerService {
     public boolean deleteAnswerById(int id) {return answerDAO.deleteAnswerById(id); }
 
     public List<Answer> getAllAnswer() {return answerDAO.getAllAnswers(); }
+
+    public Answer getAnswerById(int id) {return answerDAO.getAnswerById(id); }
 }
