@@ -33,8 +33,8 @@ public class QuestionService {
     }
 
     public QuestionDTO getQuestionById(int id) {
-        // TODO
-        throw new UnsupportedOperationException();
+        Question question = questionsDAO.getQuestionById(id);
+        return new QuestionDTO(question.id(),question.title(),question.description(),question.time());
     }
 
     public boolean deleteQuestionById(int id) {
