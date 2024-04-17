@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import QuestionList from '../components/QuestionList'
+import QuestionList from '../components/QuestionList.jsx'
 
     async function fetchQuestions(){
         return fetch("/api/question/all").then((res) => res.json())
