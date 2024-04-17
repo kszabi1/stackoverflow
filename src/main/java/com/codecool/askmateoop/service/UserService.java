@@ -41,4 +41,7 @@ public class UserService {
         User user = usersDAO.getUserById(id);
         return new UserDTO(user.id(), user.username(), user.password(), user.registrationTime());
     }
+
+    public boolean login(NewUserDTO user) {return usersDAO.login(user);}
+
 }

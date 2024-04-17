@@ -36,4 +36,7 @@ public class UserController {
     public UserDTO getUserById(@PathVariable int id){
         return userService.getUserById(id);
     }
+
+    @PostMapping("/login")
+    public boolean login(@RequestBody NewUserDTO user) {return userService.login(user);}
 }
