@@ -32,4 +32,7 @@ public class AnswerController {
     @GetMapping("/{id}")
     public Answer getAnswerById(@PathVariable int id) { return answerService.getAnswerById(id); }
 
+    @GetMapping("/all/{question_id}")
+    public List<Answer> getAllAnswerByQuestionId(@PathVariable int question_id) {return answerService.getAllAnswerByQuestionId(question_id);}
+
 }

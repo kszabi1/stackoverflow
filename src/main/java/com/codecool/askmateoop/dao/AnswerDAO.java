@@ -10,4 +10,5 @@ public interface AnswerDAO {
     boolean deleteAnswerById(int id);
     List<Answer> getAllAnswers();
     Answer getAnswerById(int id);
+    List<Answer> getAllAnswersByQuestionId(int questionId);
 }

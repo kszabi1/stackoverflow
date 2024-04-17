@@ -77,13 +77,7 @@ public class AnswerDaoJdbc implements AnswerDAO{
         try (Connection connection = conf.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
-            while (resultSet.next()) {
-                answerId = resultSet.getInt("answer_id");
-                question_id = resultSet.getInt("question_id");
-                message = resultSet.getString("message");
-                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
-                answers.add(new Answer(answerId, question_id, message, time));
-            }
+            getAnswers(answers, resultSet);
         } catch (SQLException e) {
             logger.logError(e.getMessage());
         }
@@ -109,5 +103,31 @@ public class AnswerDaoJdbc implements AnswerDAO{
             logger.logError(e.getMessage());
         }
         return searchedAnswer;
+    }
+
+    @Override
+    public  List<Answer> getAllAnswersByQuestionId(int questionId) {
+        String sql = "SELECT * FROM answers WHERE question_id = ?";
+        List<Answer> answers = new ArrayList<>();
+
+        try (Connection connection = conf.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            getAnswers(answers, resultSet);
+
+        } catch (SQLException e) {
+            logger.logError(e.getMessage());
+        }
+        return answers;
+    }
+
+    private void getAnswers(List<Answer> answers, ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            answerId = resultSet.getInt("answer_id");
+            question_id = resultSet.getInt("question_id");
+            message = resultSet.getString("message");
+            time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+            answers.add(new Answer(answerId, question_id, message, time));
+        }
     }
 }
