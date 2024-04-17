@@ -26,4 +26,6 @@ public class AnswerService {
     public List<Answer> getAllAnswer() {return answerDAO.getAllAnswers(); }
 
     public Answer getAnswerById(int id) {return answerDAO.getAnswerById(id); }
+
+    public List<Answer> getAllAnswerByQuestionId(int question_id) {return answerDAO.getAllAnswersByQuestionId(question_id);}
 }
