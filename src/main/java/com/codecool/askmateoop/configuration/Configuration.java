@@ -21,7 +21,7 @@ public class Configuration {
 
     public Connection getConnection() {
         try {
-            return DriverManager.getConnection(databaseUrl, username, password);
+            return DriverManager.getConnection("jdbc:postgresql://localhost:5432/stackoverflow", username, "asd");
         } catch (SQLException ex) {
             System.err.println("Could not create database connection.");
             throw new RuntimeException(ex);
