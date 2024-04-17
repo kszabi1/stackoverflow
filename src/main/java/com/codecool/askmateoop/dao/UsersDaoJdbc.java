@@ -110,4 +110,27 @@ public class UsersDaoJdbc implements UsersDAO{
         }
         return false;
     }
+
+    @Override
+    public boolean login(NewUserDTO user) {
+        boolean result = false;
+        try (Connection connection = configuration.getConnection()) {
+            String sql = "SELECT * FROM users WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, user.username());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String password = resultSet.getString("password");
+                result = user.password().equals(password);
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            logger.logError(e.getMessage());
+        }
+
+        return result;
+    }
 }
