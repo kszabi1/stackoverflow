@@ -14,6 +14,7 @@ const Navbar = () => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         setIsLoggedIn(false);
+        window.location.reload();
     };
 
     const handleClosePopup = () => {
@@ -30,9 +31,8 @@ const Navbar = () => {
     return (
         <div className='navbar'>
             <div className='navbarTitle'>
-                <h3 className='pageTitle'>QoverFlow</h3>
+                <Link to="/" className='navbarText'><h3 className='pageTitle'>QoverFlow</h3></Link>
             </div>
-            <Link to="/" className="navbarText">Home</Link>
             <Link to="/questions" className="navbarText">Questions</Link>
             {isLoggedIn? (
                 <button onClick={handleLogout} className="navbarText login-button">
@@ -43,7 +43,7 @@ const Navbar = () => {
                     Login / Sign Up
                 </button>
             )}
-            {showPopup && <LoginPopup onClose={handleClosePopup} onLogin={() => setIsLoggedIn(true)}/>}
+            {showPopup && <LoginPopup onClose={handleClosePopup} onLogin={() => {setIsLoggedIn(true); window.location.reload();}}/>}
         </div>
     )
 }
