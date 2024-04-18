@@ -12,7 +12,7 @@
   
   table {
     border-collapse: collapse;
-    width: 65%;
+    width: 85%;
   }
   
   th {
@@ -33,6 +33,7 @@
     text-align: left;
     padding: 8px;
     border-bottom: 1px solid #333;
+    font-size: large;
   }
 
   .titleText{

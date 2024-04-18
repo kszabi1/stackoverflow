@@ -1,10 +1,14 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import "../css/QuestionList.css"
 
 const QuestionList = ({ questions }) => {
     return (
         <div className='questionList'>
+            <Link to="/ask">
+            <button className='askButton'>
+            <h3>Ask a question!</h3>
+            </button>
+            </Link>
             <table>
                 <tbody>
                     <tr>

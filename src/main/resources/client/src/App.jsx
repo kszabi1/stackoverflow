@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import Home from "./pages/Home";
 import Questions from "./pages/Questions";
 import Question from "./components/Question";
+import Ask from "./pages/Ask";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<Home/>}/>
             <Route path="/questions" element={<Questions/>}/>
             <Route path="/question/:id" element={<Question/>}/>
+            <Route path="/ask" element={<Ask/>}/>
           </Routes>
         </div>
       </div>
