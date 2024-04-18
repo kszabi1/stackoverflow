@@ -28,11 +28,12 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
     private String question;
     private String description;
     private LocalDateTime time;
+    private int user_id;
 
 
     @Override
     public List<Question> getAllQuestions() {
-        String sql = "SELECT * FROM questions";
+        String sql = "SELECT question_id, question, description, creation_date, user_id FROM questions";
 
         List<Question> questions = new ArrayList<>();
 
@@ -44,8 +45,9 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
                 questionId = resultSet.getInt("question_id");
                 question = resultSet.getString("question");
                 description = resultSet.getString("description");
-                time = resultSet.getTimestamp("creation_time").toLocalDateTime();
-                questions.add(new Question(questionId, question, description, time));
+                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+                user_id = resultSet.getInt("user_id");
+                questions.add(new Question(questionId, question, description, time, user_id));
             }
         } catch (SQLException e) {
             logger.logError(e.getMessage());
@@ -55,13 +57,13 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
 
     @Override
     public int addNewQuestion(NewQuestionDTO question) {
-        String sql = "INSERT INTO questions(question, description) VALUES(?, ?)";
-        Question newQuestion = null;
+        String sql = "INSERT INTO questions(question, description, user_id) VALUES(?, ?, ?)";
 
         try (Connection connection = conf.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, question.title());
             preparedStatement.setString(2, question.description());
+            preparedStatement.setInt(3, question.user_id());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -90,8 +92,9 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
                 questionId = resultSet.getInt("question_id");
                 question = resultSet.getString("question");
                 description = resultSet.getString("description");
-                time = resultSet.getTimestamp("creation_time").toLocalDateTime();
-                searchedQuestion = new Question(questionId, question, description, time);
+                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+                user_id = resultSet.getInt("user_id");
+                searchedQuestion = new Question(questionId, question, description, time, user_id);
             }
         } catch (SQLException e) {
             logger.logError(e.getMessage());
