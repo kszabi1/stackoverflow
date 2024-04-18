@@ -42,6 +42,6 @@ public class UserService {
         return new UserDTO(user.id(), user.username(), user.registrationTime());
     }
 
-    public boolean login(NewUserDTO user) {return usersDAO.login(user);}
+    public int login(NewUserDTO user) {return usersDAO.login(user);}
 
 }

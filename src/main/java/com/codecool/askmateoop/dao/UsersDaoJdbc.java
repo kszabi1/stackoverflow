@@ -24,11 +24,6 @@ public class UsersDaoJdbc implements UsersDAO {
         this.configuration = configuration;
     }
 
-    private String username;
-    private String password;
-    private LocalDateTime time;
-    private int userId;
-
     @Override
     public List<User> getAllUsers() {
         String sql = "SELECT user_id, username, password, registration_time FROM users";
@@ -39,11 +34,10 @@ public class UsersDaoJdbc implements UsersDAO {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                userId = resultSet.getInt("user_id");
-                username = resultSet.getString("username");
-                password = resultSet.getString("password");
-                time = resultSet.getTimestamp("registration_time").toLocalDateTime();
-                users.add(new User(userId, username, password, time));
+                int userId = resultSet.getInt("user_id");
+                String username = resultSet.getString("username");
+                LocalDateTime time = resultSet.getTimestamp("registration_time").toLocalDateTime();
+                users.add(new User(userId, username, time));
             }
         } catch (SQLException e) {
             logger.logError(e.getMessage());
@@ -54,7 +48,6 @@ public class UsersDaoJdbc implements UsersDAO {
     @Override
     public int addNewUser(NewUserDTO user) {
         String sql = "INSERT INTO users(username, password) VALUES(?, ?)";
-        Question newUser = null;
 
         try (Connection connection = configuration.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -85,11 +78,10 @@ public class UsersDaoJdbc implements UsersDAO {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                userId = resultSet.getInt("user_id");
-                username = resultSet.getString("username");
-                password = resultSet.getString("password");
-                time = resultSet.getTimestamp("registration_time").toLocalDateTime();
-                searchedUser = new User(userId, username, password, time);
+                int userId = resultSet.getInt("user_id");
+                String username = resultSet.getString("username");
+                LocalDateTime time = resultSet.getTimestamp("registration_time").toLocalDateTime();
+                searchedUser = new User(userId, username, time);
             }
         } catch (SQLException e) {
             logger.logError(e.getMessage());
@@ -120,17 +112,19 @@ public class UsersDaoJdbc implements UsersDAO {
     }
 
     @Override
-    public boolean login(NewUserDTO user) {
-        boolean result = false;
+    public int login(NewUserDTO user) {
+        int result = 0;
         try (Connection connection = configuration.getConnection()) {
-            String sql = "SELECT username, password FROM users WHERE username = ?";
+            String sql = "SELECT user_id, password FROM users WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, user.username());
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
                 String password = resultSet.getString("password");
-                result = user.password().equals(password);
+                if(user.password().equals(password)){
+                    result = resultSet.getInt("user_id");
+                }
             }
 
             resultSet.close();

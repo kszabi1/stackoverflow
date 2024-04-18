@@ -32,11 +32,12 @@ public class UserController {
     public boolean deleteUserById(@PathVariable int id) {
         return userService.deleteUser(id);
     }
+
     @GetMapping("/{id}")
     public UserDTO getUserById(@PathVariable int id){
         return userService.getUserById(id);
     }
 
     @PostMapping("/login")
-    public boolean login(@RequestBody NewUserDTO user) {return userService.login(user);}
+    public int login(@RequestBody NewUserDTO user) {return userService.login(user);}
 }
