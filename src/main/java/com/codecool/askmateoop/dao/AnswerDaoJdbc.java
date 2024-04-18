@@ -18,11 +18,6 @@ public class AnswerDaoJdbc implements AnswerDAO{
     private final Logger logger = new ConsoleLogger();
     private final Configuration conf = new Configuration();
 
-    private int answerId;
-    private int question_id;
-    private String message;
-    private LocalDateTime time;
-
     @Override
     public int createAnswer(NewAnswerDTO answer) {
         String sql = "INSERT INTO answers(question_id, message) VALUES(?, ?)";
@@ -50,14 +45,12 @@ public class AnswerDaoJdbc implements AnswerDAO{
     public boolean deleteAnswerById(int id) {
         String sql = "DELETE FROM answers WHERE answer_id = ?";
 
-        try (Connection connection = conf.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = conf.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                int answer_id = generatedKeys.getInt(1);
-                logger.logInfo("Answer deleted with id: " + answer_id);
+            if (preparedStatement.executeUpdate() > 0) {
+                logger.logInfo("Answer deleted with id: " + id);
                 return true;
             } else {
                 throw new SQLException("Deleting answer failed, no ID obtained.");
@@ -77,7 +70,7 @@ public class AnswerDaoJdbc implements AnswerDAO{
         try (Connection connection = conf.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
-            getAnswers(answers, resultSet);
+            answers = getAnswers(resultSet);
         } catch (SQLException e) {
             logger.logError(e.getMessage());
         }
@@ -86,12 +79,17 @@ public class AnswerDaoJdbc implements AnswerDAO{
 
     @Override
     public Answer getAnswerById(int id) {
+        int answerId;
+        int question_id;
+        String message;
+        LocalDateTime time;
+
         String sql = "SELECT * FROM answers WHERE answer_id = ?";
         Answer searchedAnswer = null;
 
-        try (Connection connection = conf.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+        try (Connection connection = conf.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 answerId = resultSet.getInt("answer_id");
                 question_id = resultSet.getInt("question_id");
@@ -113,7 +111,7 @@ public class AnswerDaoJdbc implements AnswerDAO{
         try (Connection connection = conf.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            getAnswers(answers, resultSet);
+            answers = getAnswers(resultSet);
 
         } catch (SQLException e) {
             logger.logError(e.getMessage());
@@ -121,7 +119,14 @@ public class AnswerDaoJdbc implements AnswerDAO{
         return answers;
     }
 
-    private void getAnswers(List<Answer> answers, ResultSet resultSet) throws SQLException {
+    private List<Answer> getAnswers(ResultSet resultSet) throws SQLException {
+        int answerId;
+        int question_id;
+        String message;
+        LocalDateTime time;
+
+        List<Answer> answers = new ArrayList<>();
+
         while (resultSet.next()) {
             answerId = resultSet.getInt("answer_id");
             question_id = resultSet.getInt("question_id");
@@ -129,5 +134,6 @@ public class AnswerDaoJdbc implements AnswerDAO{
             time = resultSet.getTimestamp("creation_date").toLocalDateTime();
             answers.add(new Answer(answerId, question_id, message, time));
         }
+        return answers;
     }
 }
