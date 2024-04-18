@@ -10,5 +10,5 @@ public interface UsersDAO {
     int addNewUser(NewUserDTO user);
     User getUserById(int id);
     boolean deleteUserById(int id);
-    boolean login(NewUserDTO user);
+    int login(NewUserDTO user);
 }
