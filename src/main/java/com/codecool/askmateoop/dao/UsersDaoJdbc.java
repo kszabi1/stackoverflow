@@ -2,7 +2,6 @@ package com.codecool.askmateoop.dao;
 
 import com.codecool.askmateoop.configuration.Configuration;
 import com.codecool.askmateoop.controller.dto.NewUserDTO;
-import com.codecool.askmateoop.dao.model.Question;
 import com.codecool.askmateoop.dao.model.User;
 import com.codecool.askmateoop.logger.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class UsersDaoJdbc implements UsersDAO {
 
     @Override
     public List<User> getAllUsers() {
-        String sql = "SELECT user_id, username, password, registration_time FROM users";
+        String sql = "SELECT user_id, username, registration_time FROM users";
 
         List<User> users = new ArrayList<>();
 
@@ -70,7 +69,7 @@ public class UsersDaoJdbc implements UsersDAO {
 
     @Override
     public User getUserById(int id) {
-        String sql = "SELECT user_id, username, password, registration_time FROM users WHERE user_id = ?";
+        String sql = "SELECT user_id, username, registration_time FROM users WHERE user_id = ?";
         User searchedUser = null;
 
         try (Connection connection = configuration.getConnection()) {
