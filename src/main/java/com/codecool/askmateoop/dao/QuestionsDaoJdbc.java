@@ -124,6 +124,41 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         return false;
     }
 
+    @Override
+    public List<Question> getQuestionsBySearchPhrase(String phrase) {
+        String sql = "SELECT question_id, question, description, creation_date, user_id FROM questions";
+
+        List<Question> questions = new ArrayList<>();
+
+
+        try (Connection connection = conf.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                questionId = resultSet.getInt("question_id");
+                question = resultSet.getString("question");
+                description = resultSet.getString("description");
+                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+                user_id = resultSet.getInt("user_id");
+                if(containsSearchPhrase(resultSet, phrase)) {
+                    questions.add(new Question(questionId, question, description, time, user_id));
+                }
+            }
+        } catch (SQLException e) {
+            logger.logError(e.getMessage());
+        }
+        return questions;
+    }
+
+    private boolean containsSearchPhrase(ResultSet resultSet, String phrase) throws SQLException {
+            String question = resultSet.getString("question");
+            String description = resultSet.getString("description");
+            String lowerCasePhrase = phrase.toLowerCase();
+            return question.toLowerCase().contains(lowerCasePhrase) ||
+                    description.toLowerCase().contains(lowerCasePhrase);
+
+    }
+
 }
 
 

@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 30px;
   }
   
   .questionList h1 {
@@ -39,3 +38,8 @@
   .titleText{
     font-size: larger;
   }
+
+.askButton{
+  margin-bottom: 10%;
+
+}
