@@ -1,14 +1,23 @@
 import { Link } from 'react-router-dom'
 import "../css/QuestionList.css"
+import {useEffect, useState} from "react";
 
 const QuestionList = ({ questions }) => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        if (localStorage.getItem('token') !== null) {
+            setIsLoggedIn(true);
+        }
+    }, []);
+
     return (
         <div className='questionList'>
-            <Link to="/ask">
+            {isLoggedIn ? (<Link to="/ask">
             <button className='askButton'>
             <h3>Ask a question!</h3>
             </button>
-            </Link>
+            </Link>): null}
             <table>
                 <tbody>
                     <tr>
