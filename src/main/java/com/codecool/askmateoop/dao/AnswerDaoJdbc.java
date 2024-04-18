@@ -63,7 +63,7 @@ public class AnswerDaoJdbc implements AnswerDAO{
 
     @Override
     public List<Answer> getAllAnswers() {
-        String sql = "SELECT * FROM answers";
+        String sql = "SELECT message FROM answers";
 
         List<Answer> answers = new ArrayList<>();
 
@@ -79,23 +79,20 @@ public class AnswerDaoJdbc implements AnswerDAO{
 
     @Override
     public Answer getAnswerById(int id) {
-        int answerId;
-        int question_id;
-        String message;
-        LocalDateTime time;
-
-        String sql = "SELECT * FROM answers WHERE answer_id = ?";
         Answer searchedAnswer = null;
+        String sql = "SELECT answer_id, question_id, message, creation_date FROM answers WHERE answer_id =?";
 
         try (Connection connection = conf.getConnection()) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                answerId = resultSet.getInt("answer_id");
-                question_id = resultSet.getInt("question_id");
-                message = resultSet.getString("message");
-                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
-                searchedAnswer = new Answer(answerId, question_id, message, time);
+                int answerId = resultSet.getInt("answer_id");
+                int question_id = resultSet.getInt("question_id");
+                String message = resultSet.getString("message");
+                Timestamp time = resultSet.getTimestamp("creation_date");
+                LocalDateTime localTime = time.toLocalDateTime();
+                searchedAnswer = new Answer(answerId, question_id, message, localTime);
             }
         } catch (SQLException e) {
             logger.logError(e.getMessage());
@@ -105,7 +102,7 @@ public class AnswerDaoJdbc implements AnswerDAO{
 
     @Override
     public  List<Answer> getAllAnswersByQuestionId(int questionId) {
-        String sql = "SELECT * FROM answers WHERE question_id = ?";
+        String sql = "SELECT answer_id, question_id, message, creation_date FROM answers WHERE question_id = ?";
         List<Answer> answers = new ArrayList<>();
 
         try (Connection connection = conf.getConnection()) {
@@ -120,18 +117,13 @@ public class AnswerDaoJdbc implements AnswerDAO{
     }
 
     private List<Answer> getAnswers(ResultSet resultSet) throws SQLException {
-        int answerId;
-        int question_id;
-        String message;
-        LocalDateTime time;
-
         List<Answer> answers = new ArrayList<>();
 
         while (resultSet.next()) {
-            answerId = resultSet.getInt("answer_id");
-            question_id = resultSet.getInt("question_id");
-            message = resultSet.getString("message");
-            time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+            int answerId = resultSet.getInt("answer_id");
+            int question_id = resultSet.getInt("question_id");
+            String message = resultSet.getString("message");
+            LocalDateTime time = resultSet.getTimestamp("creation_date").toLocalDateTime();
             answers.add(new Answer(answerId, question_id, message, time));
         }
         return answers;
