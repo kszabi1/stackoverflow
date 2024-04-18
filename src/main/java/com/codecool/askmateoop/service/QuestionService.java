@@ -26,7 +26,7 @@ public class QuestionService {
 
         for (Question question : allQuestions) {
             convertedQuestions.add(new QuestionDTO(question.id(), question.title(),
-                    question.description(), question.time()));
+                    question.description(), question.time(), question.user_id()));
         }
 
         return convertedQuestions;
@@ -34,7 +34,7 @@ public class QuestionService {
 
     public QuestionDTO getQuestionById(int id) {
         Question question = questionsDAO.getQuestionById(id);
-        return new QuestionDTO(question.id(),question.title(),question.description(),question.time());
+        return new QuestionDTO(question.id(),question.title(),question.description(),question.time(), question.user_id());
     }
 
     public boolean deleteQuestionById(int id) {

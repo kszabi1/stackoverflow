@@ -10,7 +10,7 @@ const Questions = () => {
 
   useEffect(() => {
     fetchQuestions().then((questions) => setQuestions(questions))
-
+    console.log(questions)
   }, [])
 
 
