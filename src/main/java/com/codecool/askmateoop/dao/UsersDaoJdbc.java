@@ -134,4 +134,30 @@ public class UsersDaoJdbc implements UsersDAO {
 
         return result;
     }
+
+    @Override
+    public List<User> getUsersByIds(List<Integer> ids) {
+        String query = "SELECT user_id, username, registration_time FROM users WHERE user_id = ANY(?)";
+
+        try (Connection connection = configuration.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(query);
+            Array array = connection.createArrayOf("INTEGER", ids.toArray());
+            statement.setArray(1, array);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            List<User> users = new ArrayList<>();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("user_id");
+                String username = resultSet.getString("username");
+                LocalDateTime time = resultSet.getTimestamp("registration_time").toLocalDateTime();
+                users.add(new User(id, username, time));
+            }
+
+            return users;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

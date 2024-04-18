@@ -1,3 +1,3 @@
 package com.codecool.askmateoop.controller.dto;
 
-public record NewAnswerDTO(int question_id, String message) {}
+public record NewAnswerDTO(int question_id, String message,int user_id) {}

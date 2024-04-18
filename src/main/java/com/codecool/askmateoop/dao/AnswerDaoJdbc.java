@@ -19,12 +19,13 @@ public class AnswerDaoJdbc implements AnswerDAO{
 
     @Override
     public int createAnswer(NewAnswerDTO answer) {
-        String sql = "INSERT INTO answers(question_id, message) VALUES(?, ?)";
+        String sql = "INSERT INTO answers(question_id, message, user_id) VALUES(?, ?, ?)";
 
         try (Connection connection = conf.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, answer.question_id());
             preparedStatement.setString(2, answer.message());
+            preparedStatement.setInt(3, answer.user_id());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -62,7 +63,7 @@ public class AnswerDaoJdbc implements AnswerDAO{
 
     @Override
     public List<Answer> getAllAnswers() {
-        String sql = "SELECT answer_id, question_id, message, creation_date FROM answers";
+        String sql = "SELECT answer_id, question_id, message, registration_date, user_id FROM answers";
 
         List<Answer> answers = new ArrayList<>();
 
@@ -78,7 +79,7 @@ public class AnswerDaoJdbc implements AnswerDAO{
 
     @Override
     public Answer getAnswerById(int id) {
-        String sql = "SELECT answer_id, question_id, message, creation_date FROM answers WHERE answer_id = ?";
+        String sql = "SELECT answer_id, question_id, message, registration_date, user_id FROM answers WHERE answer_id = ?";
         Answer searchedAnswer = null;
 
         try (Connection connection = conf.getConnection()) {
@@ -89,7 +90,8 @@ public class AnswerDaoJdbc implements AnswerDAO{
                 int question_id = resultSet.getInt("question_id");
                 String message = resultSet.getString("message");
                 LocalDateTime time = resultSet.getTimestamp("creation_date").toLocalDateTime();
-                searchedAnswer = new Answer(answerId, question_id, message, time);
+                int userId = resultSet.getInt("user_id");
+                searchedAnswer = new Answer(answerId, question_id, message, time, userId);
             }
         } catch (SQLException e) {
             logger.logError(e.getMessage());
@@ -99,12 +101,13 @@ public class AnswerDaoJdbc implements AnswerDAO{
 
     @Override
     public  List<Answer> getAllAnswersByQuestionId(int questionId) {
-        String sql = "SELECT answer_id, question_id, message, creation_date FROM answers WHERE question_id = ?";
+        String sql = "SELECT answer_id, question_id, message, registration_date, user_id FROM answers WHERE question_id = ?";
         List<Answer> answers = new ArrayList<>();
 
         try (Connection connection = conf.getConnection()) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, questionId);
+            ResultSet resultSet = statement.executeQuery();
             answers = getAnswers(resultSet);
 
         } catch (SQLException e) {
@@ -120,8 +123,9 @@ public class AnswerDaoJdbc implements AnswerDAO{
             int answerId = resultSet.getInt("answer_id");
             int question_id = resultSet.getInt("question_id");
             String message = resultSet.getString("message");
-            LocalDateTime time = resultSet.getTimestamp("creation_date").toLocalDateTime();
-            answers.add(new Answer(answerId, question_id, message, time));
+            LocalDateTime time = resultSet.getTimestamp("registration_date").toLocalDateTime();
+            int userId = resultSet.getInt("user_id");
+            answers.add(new Answer(answerId, question_id, message, time, userId));
         }
         return answers;
     }
