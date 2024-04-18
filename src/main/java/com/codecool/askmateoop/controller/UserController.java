@@ -4,6 +4,7 @@ import com.codecool.askmateoop.controller.dto.NewUserDTO;
 import com.codecool.askmateoop.controller.dto.UserDTO;
 import com.codecool.askmateoop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,5 +40,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public int login(@RequestBody NewUserDTO user) {return userService.login(user);}
+    public ResponseEntity<?> login(@RequestBody NewUserDTO user) {
+        int userId = userService.login(user);
+
+        if (userId <= 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(userId);
+    }
 }
