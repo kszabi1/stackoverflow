@@ -28,6 +28,11 @@ public class QuestionController {
         return questionService.getQuestionById(id);
     }
 
+    @GetMapping("/search/{phrase}")
+    public List<QuestionDTO> getQuestionsBySearchPhrase(@PathVariable String phrase) {
+        return questionService.getQuestionsBySearchPhrase(phrase);
+    }
+
     @PostMapping("/")
     public int addNewQuestion(@RequestBody NewQuestionDTO question) {
         return questionService.addNewQuestion(question);

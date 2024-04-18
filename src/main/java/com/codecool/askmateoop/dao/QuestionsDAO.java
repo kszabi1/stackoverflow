@@ -10,4 +10,5 @@ public interface QuestionsDAO {
     int addNewQuestion(NewQuestionDTO question);
     Question getQuestionById(int id);
     boolean deleteQuestionById(int id);
+    List<Question> getQuestionsBySearchPhrase(String phrase);
 }

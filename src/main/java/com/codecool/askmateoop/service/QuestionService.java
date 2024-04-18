@@ -36,6 +36,17 @@ public class QuestionService {
         Question question = questionsDAO.getQuestionById(id);
         return new QuestionDTO(question.id(),question.title(),question.description(),question.time(), question.user_id());
     }
+    public List<QuestionDTO> getQuestionsBySearchPhrase(String phrase){
+        List<Question> allQuestions = questionsDAO.getQuestionsBySearchPhrase(phrase);
+        List<QuestionDTO> convertedQuestions = new ArrayList<>();
+
+        for (Question question : allQuestions) {
+            convertedQuestions.add(new QuestionDTO(question.id(), question.title(),
+                    question.description(), question.time(), question.user_id()));
+        }
+
+        return convertedQuestions;
+    }
 
     public boolean deleteQuestionById(int id) {
         return questionsDAO.deleteQuestionById(id);
