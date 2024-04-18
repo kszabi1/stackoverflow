@@ -1,5 +1,6 @@
 import AskForm from "../components/AskForm"
 import { useNavigate } from "react-router-dom";
+import "../css/ask.css"
 
 function postQuestion(question) {
   return fetch("/api/question/", {
@@ -21,7 +22,7 @@ const Ask = () => {
 
   return (
     <div className="askPage">
-      <h2>Fill out the form with your question, and its descriprion.</h2>
+      <h2 className="title">Fill out the form with your question, and its descriprion.</h2>
       <AskForm onSave={handlePostQuestion} />
     </div>
   )

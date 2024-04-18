@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import "../css/askForm.css"
 
 const AskForm = ({ onSave }) => {
     const [title, setTitle] = useState("")
