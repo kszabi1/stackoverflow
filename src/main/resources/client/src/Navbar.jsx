@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import LoginPopup from './components/LoginPopup';
 import "./css/Navbar.css"
+import "./css/login.css"
 
 const Navbar = () => {
     const [showPopup, setShowPopup] = useState(false);

@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private UsersDAO usersDAO;
+    private final UsersDAO usersDAO;
 
     @Autowired
     public UserService(UsersDAO usersDAO) {
@@ -40,6 +41,11 @@ public class UserService {
     public UserDTO getUserById(int id) {
         User user = usersDAO.getUserById(id);
         return new UserDTO(user.id(), user.username(), user.registrationTime());
+    }
+
+    public List<UserDTO> getUsersByIds(List<Integer> ids) {
+        List<User> users = usersDAO.getUsersByIds(ids);
+        return users.stream().map(user -> new UserDTO(user.id(), user.username(), user.registrationTime())).collect(Collectors.toList());
     }
 
     public int login(NewUserDTO user) {return usersDAO.login(user);}

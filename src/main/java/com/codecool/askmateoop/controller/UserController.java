@@ -39,6 +39,11 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    @GetMapping("/by/{ids}")
+    public List<UserDTO> getUsersByIds(@PathVariable List<Integer> ids) {
+        return userService.getUsersByIds(ids);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody NewUserDTO user) {
         int userId = userService.login(user);
