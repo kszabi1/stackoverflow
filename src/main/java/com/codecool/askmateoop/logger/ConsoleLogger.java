@@ -1,7 +1,9 @@
 package com.codecool.askmateoop.logger;
 
-import java.time.LocalDate;
+import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+@Component
 public class ConsoleLogger implements Logger{
 
     @Override

@@ -4,8 +4,8 @@ import com.codecool.askmateoop.configuration.Configuration;
 import com.codecool.askmateoop.controller.dto.NewUserDTO;
 import com.codecool.askmateoop.dao.model.Question;
 import com.codecool.askmateoop.dao.model.User;
-import com.codecool.askmateoop.logger.ConsoleLogger;
 import com.codecool.askmateoop.logger.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -14,22 +14,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class UsersDaoJdbc implements UsersDAO{
-    private Logger logger = new ConsoleLogger();
-    private Configuration configuration = new Configuration();
+public class UsersDaoJdbc implements UsersDAO {
+    private final Logger logger;
+    private final Configuration configuration;
+
+    @Autowired
+    public UsersDaoJdbc(Logger logger, Configuration configuration) {
+        this.logger = logger;
+        this.configuration = configuration;
+    }
+
     private String username;
     private String password;
     private LocalDateTime time;
     private int userId;
+
     @Override
     public List<User> getAllUsers() {
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT user_id, username, password, registration_time FROM users";
 
         List<User> users = new ArrayList<>();
 
-        try (Connection connection = configuration.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+        try (Connection connection = configuration.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 userId = resultSet.getInt("user_id");
                 username = resultSet.getString("username");
@@ -48,8 +56,8 @@ public class UsersDaoJdbc implements UsersDAO{
         String sql = "INSERT INTO users(username, password) VALUES(?, ?)";
         Question newUser = null;
 
-        try (Connection connection = configuration.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = configuration.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, user.username());
             preparedStatement.setString(2, user.password());
             preparedStatement.executeUpdate();
@@ -69,11 +77,11 @@ public class UsersDaoJdbc implements UsersDAO{
 
     @Override
     public User getUserById(int id) {
-        String sql = "SELECT * FROM users WHERE user_id = ?";
+        String sql = "SELECT user_id, username, password, registration_time FROM users WHERE user_id = ?";
         User searchedUser = null;
 
-        try (Connection connection = configuration.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = configuration.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -93,8 +101,8 @@ public class UsersDaoJdbc implements UsersDAO{
     public boolean deleteUserById(int id) {
         String sql = "DELETE FROM users WHERE user_id = ?";
 
-        try (Connection connection = configuration.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = configuration.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -115,7 +123,7 @@ public class UsersDaoJdbc implements UsersDAO{
     public boolean login(NewUserDTO user) {
         boolean result = false;
         try (Connection connection = configuration.getConnection()) {
-            String sql = "SELECT * FROM users WHERE username = ?";
+            String sql = "SELECT username, password FROM users WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, user.username());
             ResultSet resultSet = statement.executeQuery();

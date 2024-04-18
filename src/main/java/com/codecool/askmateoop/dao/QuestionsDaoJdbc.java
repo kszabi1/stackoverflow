@@ -3,10 +3,9 @@ package com.codecool.askmateoop.dao;
 import com.codecool.askmateoop.configuration.Configuration;
 import com.codecool.askmateoop.controller.dto.NewQuestionDTO;
 import com.codecool.askmateoop.dao.model.Question;
-import com.codecool.askmateoop.logger.ConsoleLogger;
 import com.codecool.askmateoop.logger.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import com.codecool.askmateoop.configuration.Configuration;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -16,16 +15,19 @@ import java.util.List;
 @Repository
 public class QuestionsDaoJdbc implements QuestionsDAO {
 
-    private final Logger logger = new ConsoleLogger();
+    private final Logger logger;
+    private final Configuration conf;
 
-    private final Configuration conf = new Configuration();
+    @Autowired
+    public QuestionsDaoJdbc(Logger logger, Configuration conf) {
+        this.logger = logger;
+        this.conf = conf;
+    }
 
     private int questionId;
     private String question;
     private String description;
     private LocalDateTime time;
-
-
 
 
     @Override
