@@ -24,7 +24,7 @@ public class UserService {
         List<UserDTO> convertedUsers = new ArrayList<>();
 
         for (User user : users) {
-            convertedUsers.add(new UserDTO(user.id(), user.username(), user.password(), user.registrationTime()));
+            convertedUsers.add(new UserDTO(user.id(), user.username(), user.registrationTime()));
         }
         return convertedUsers;
     }
@@ -39,7 +39,7 @@ public class UserService {
 
     public UserDTO getUserById(int id) {
         User user = usersDAO.getUserById(id);
-        return new UserDTO(user.id(), user.username(), user.password(), user.registrationTime());
+        return new UserDTO(user.id(), user.username(), user.registrationTime());
     }
 
     public boolean login(NewUserDTO user) {return usersDAO.login(user);}

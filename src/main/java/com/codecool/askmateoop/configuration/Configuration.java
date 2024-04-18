@@ -1,15 +1,12 @@
 package com.codecool.askmateoop.configuration;
 
-import com.codecool.askmateoop.dao.QuestionsDAO;
-import com.codecool.askmateoop.dao.QuestionsDaoJdbc;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringBootConfiguration;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-@SpringBootConfiguration
+@org.springframework.context.annotation.Configuration
 public class Configuration {
 
     @Value("${askmate.database.url}")
@@ -28,8 +25,5 @@ public class Configuration {
         }
     }
 
-    public QuestionsDAO questionsDAO() {
-        return new QuestionsDaoJdbc();
-    }
 
 }
