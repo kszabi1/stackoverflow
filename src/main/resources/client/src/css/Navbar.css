@@ -1,8 +1,9 @@
+/* Common styles for both desktop and mobile */
 .navbar {
     display: flex;
+    height: 60px;
     justify-content: space-between;
     align-items: center;
-    height: 60px;
     background-color: #333;
 }
 
@@ -26,8 +27,27 @@
     margin: 0;
 }
 
-.navbarTitle{
+.navbarTitle {
     display: flex;
     align-items: center;
     margin-left: 3%;
+}
+
+/* Media query for mobile screens */
+@media screen and (max-width: 767px) {
+    .navbar {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .navbarText {
+        display: block;
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    .navbarTitle {
+        justify-content: center;
+        margin: 10px 0;
+    }
 }

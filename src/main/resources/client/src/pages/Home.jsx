@@ -1,9 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react';
+import "../css/home.css";
 
 const Home = () => {
-  return (
-    <div>Welcome on QoverFlow</div>
-  )
-}
+  const [showImage, setShowImage] = useState(false);
 
-export default Home
+  const toggleImage = () => {
+    setShowImage(!showImage);
+  };
+
+  return (
+      <div className="container">
+        <h1 className="welcome fancy-text">Welcome on QoverFlow</h1>
+        <div className="image-container">
+          <img
+              src={showImage ? "https://i.imgur.com/1q2rTJ7.png" : ""}
+              alt="Spoiler Image"
+              className={showImage ? "show-image" : "hide-image"}
+          />
+          <button onClick={toggleImage} className="spoiler-button">
+            {showImage ? "Hide Image" : "Show Image"}
+          </button>
+        </div>
+      </div>
+  );
+};
+
+export default Home;
