@@ -2,31 +2,32 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 50px;
+    margin-top: 20px;
 }
 
 .question-container {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
+    width: 90%;
 }
 
 .question-container h1 {
-    font-size: 3rem;
+    font-size: 2.5rem;
     margin-bottom: 10px;
 }
 
 .question-container h3 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     color: #666;
 }
 
 .answers-container {
-    max-height: 300px;
+    max-height: 200px;
     overflow-y: auto;
     border: 1px solid #ddd;
     border-radius: 5px;
-    padding: 20px;
-    width: 50%;
+    padding: 15px;
+    width: 90%;
 }
 
 .answers-container h3 {
@@ -37,15 +38,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 30px;
-    width: 50%;
+    margin-top: 20px;
+    width: 90%;
 }
 
 .comment-box textarea {
-    height: 100px;
+    height: 80px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    padding: 10px;
+    padding: 8px;
     resize: vertical;
     margin-bottom: 10px;
     width: 100%;
@@ -65,5 +66,7 @@
     background-color: #45a049;
 }
 
-
-
+.answer-box {
+    border-bottom: 1px solid black;
+    padding: 20px;
+}

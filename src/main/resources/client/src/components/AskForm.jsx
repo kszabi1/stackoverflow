@@ -7,7 +7,7 @@ const AskForm = ({ onSave }) => {
 
     async function onSubmit(e) {
         e.preventDefault();
-        const user_id = localStorage.getItem(token)
+        const user_id = localStorage.getItem('token');
         return onSave({
             title,
             description,

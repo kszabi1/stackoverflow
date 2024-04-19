@@ -25,7 +25,7 @@ public class UsersDaoJdbc implements UsersDAO {
 
     @Override
     public List<User> getAllUsers() {
-        String sql = "SELECT user_id, username, registration_time FROM users";
+        String sql = "SELECT user_id, username, registration_date FROM users";
 
         List<User> users = new ArrayList<>();
 
@@ -35,7 +35,7 @@ public class UsersDaoJdbc implements UsersDAO {
             while (resultSet.next()) {
                 int userId = resultSet.getInt("user_id");
                 String username = resultSet.getString("username");
-                LocalDateTime time = resultSet.getTimestamp("registration_time").toLocalDateTime();
+                LocalDateTime time = resultSet.getTimestamp("registration_date").toLocalDateTime();
                 users.add(new User(userId, username, time));
             }
         } catch (SQLException e) {
@@ -69,7 +69,7 @@ public class UsersDaoJdbc implements UsersDAO {
 
     @Override
     public User getUserById(int id) {
-        String sql = "SELECT user_id, username, registration_time FROM users WHERE user_id = ?";
+        String sql = "SELECT user_id, username, registration_date FROM users WHERE user_id = ?";
         User searchedUser = null;
 
         try (Connection connection = configuration.getConnection()) {
@@ -79,7 +79,7 @@ public class UsersDaoJdbc implements UsersDAO {
             if (resultSet.next()) {
                 int userId = resultSet.getInt("user_id");
                 String username = resultSet.getString("username");
-                LocalDateTime time = resultSet.getTimestamp("registration_time").toLocalDateTime();
+                LocalDateTime time = resultSet.getTimestamp("registration_date").toLocalDateTime();
                 searchedUser = new User(userId, username, time);
             }
         } catch (SQLException e) {
@@ -137,7 +137,7 @@ public class UsersDaoJdbc implements UsersDAO {
 
     @Override
     public List<User> getUsersByIds(List<Integer> ids) {
-        String query = "SELECT user_id, username, registration_time FROM users WHERE user_id = ANY(?)";
+        String query = "SELECT user_id, username, registration_date FROM users WHERE user_id = ANY(?)";
 
         try (Connection connection = configuration.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
@@ -150,7 +150,7 @@ public class UsersDaoJdbc implements UsersDAO {
             while (resultSet.next()) {
                 int id = resultSet.getInt("user_id");
                 String username = resultSet.getString("username");
-                LocalDateTime time = resultSet.getTimestamp("registration_time").toLocalDateTime();
+                LocalDateTime time = resultSet.getTimestamp("registration_date").toLocalDateTime();
                 users.add(new User(id, username, time));
             }
 

@@ -33,7 +33,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
 
     @Override
     public List<Question> getAllQuestions() {
-        String sql = "SELECT question_id, question, description, creation_date, user_id FROM questions";
+        String sql = "SELECT question_id, question, description, creation_time, user_id FROM questions";
 
         List<Question> questions = new ArrayList<>();
 
@@ -45,7 +45,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
                 questionId = resultSet.getInt("question_id");
                 question = resultSet.getString("question");
                 description = resultSet.getString("description");
-                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+                time = resultSet.getTimestamp("creation_time").toLocalDateTime();
                 user_id = resultSet.getInt("user_id");
                 questions.add(new Question(questionId, question, description, time, user_id));
             }
@@ -92,7 +92,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
                 questionId = resultSet.getInt("question_id");
                 question = resultSet.getString("question");
                 description = resultSet.getString("description");
-                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+                time = resultSet.getTimestamp("creation_time").toLocalDateTime();
                 user_id = resultSet.getInt("user_id");
                 searchedQuestion = new Question(questionId, question, description, time, user_id);
             }
@@ -126,7 +126,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
 
     @Override
     public List<Question> getQuestionsBySearchPhrase(String phrase) {
-        String sql = "SELECT question_id, question, description, creation_date, user_id FROM questions";
+        String sql = "SELECT question_id, question, description, creation_time, user_id FROM questions";
 
         List<Question> questions = new ArrayList<>();
 
@@ -138,7 +138,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
                 questionId = resultSet.getInt("question_id");
                 question = resultSet.getString("question");
                 description = resultSet.getString("description");
-                time = resultSet.getTimestamp("creation_date").toLocalDateTime();
+                time = resultSet.getTimestamp("creation_time").toLocalDateTime();
                 user_id = resultSet.getInt("user_id");
                 if(containsSearchPhrase(resultSet, phrase)) {
                     questions.add(new Question(questionId, question, description, time, user_id));

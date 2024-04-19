@@ -4,6 +4,7 @@ import com.codecool.askmateoop.controller.dto.NewUserDTO;
 import com.codecool.askmateoop.controller.dto.UserDTO;
 import com.codecool.askmateoop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +26,12 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public int addNewUser(@RequestBody NewUserDTO user) {
-        return userService.addNewUser(user);
+    public ResponseEntity<?> addNewUser(@RequestBody NewUserDTO user) {
+        int userId = userService.addNewUser(user);
+        if (userId <= 0) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(userId);
     }
 
     @DeleteMapping("/{id}")
